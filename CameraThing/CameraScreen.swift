@@ -790,13 +790,14 @@ struct CameraScreen: View {
     }
 
     private func activeAssistShortcutBar(compactUI: Bool, isLandscape: Bool) -> some View {
-        LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: isLandscape ? 64 : 72, maximum: isLandscape ? 94 : 108), spacing: compactUI ? 6 : 8)],
-            spacing: compactUI ? 6 : 8
-        ) {
-            ForEach(activeAssistShortcuts) { shortcut in
-                assistShortcutButton(shortcut, compactUI: compactUI)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: compactUI ? 6 : 8) {
+                ForEach(activeAssistShortcuts) { shortcut in
+                    assistShortcutButton(shortcut, compactUI: compactUI)
+                }
             }
+
+            activeAssistSummaryButton(compactUI: compactUI)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(compactUI ? 8 : 10)
@@ -820,10 +821,18 @@ struct CameraScreen: View {
             }
             .font(.system(compactUI ? .caption2 : .caption, design: .rounded).weight(.semibold))
             .foregroundStyle(.black)
-            .frame(maxWidth: .infinity)
             .padding(.vertical, compactUI ? 8 : 9)
             .padding(.horizontal, compactUI ? 8 : 10)
             .background(accentColor, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func activeAssistSummaryButton(compactUI: Bool) -> some View {
+        Button {
+            togglePanel(.more)
+        } label: {
+            smallBadge(activeAssistBadgeText(compactUI: compactUI), icon: "viewfinder", tint: .white.opacity(0.92), compactUI: compactUI)
         }
         .buttonStyle(.plain)
     }
